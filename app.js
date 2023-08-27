@@ -12,19 +12,16 @@ app.get("/", (req, res) => {
   res.send("Сервер работает и ждет запросы, все круто!");
 });
 
-app.use("/users", require("./routes/users"));
-
 app.use((req, res, next) => {
   req.user = {
     _id: "64ea7977954b395f456e2bc9", // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
-
   next();
 });
 
-module.exports.createCard = (req, res) => {
-  console.log(req.user._id); // _id станет доступен
-};
+app.use("/users", require("./routes/users"));
+app.use("/cards", require("./routes/cards"));
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
