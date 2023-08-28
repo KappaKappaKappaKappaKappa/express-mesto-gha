@@ -1,13 +1,28 @@
 const User = require("../models/user");
 
+const {
+  STATUS_OK,
+  STATUS_CREATED,
+  STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
+  STATUS_SERVER_ERROR,
+} = require("../utils/errors");
+
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      res.send({ data: users });
+      if (!users || users.length === 0) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Пользователи не найдены" });
+        return;
+      }
+      res.status(STATUS_OK).send({ data: users });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -15,15 +30,17 @@ const getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        console.log("Такого пользователя не существует");
-        res.status(404).send({ message: "Пользователь не найден" });
+        res
+          .status(404)
+          .send({ message: "Запрашиваемый пользователь не найден" });
         return;
       }
-      res.send({ data: user });
+      res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -31,11 +48,16 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => {
-      res.send({ data: user });
+      res.status(STATUS_CREATED).send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      if (err.name === "ValidationError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      }
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -47,11 +69,16 @@ const updateProfile = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((user) => {
-      res.send({ data: user });
+      if (!name || !about) {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      }
+      res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -62,9 +89,19 @@ const updateAvatar = (req, res) => {
     req.user._id,
     { avatar },
     { new: true, runValidators: true }
-  ).then((newAvatar) => {
-    res.send({ data: newAvatar });
-  });
+  )
+    .then((newAvatar) => {
+      if (!avatar) {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      }
+      res.status(STATUS_OK).send({ data: newAvatar });
+    })
+    .catch((err) => {
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
+    });
 };
 
 module.exports = {
@@ -72,5 +109,5 @@ module.exports = {
   getUser,
   createUser,
   updateProfile,
-  updateAvatar
+  updateAvatar,
 };

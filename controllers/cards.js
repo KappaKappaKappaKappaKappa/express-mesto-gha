@@ -1,13 +1,26 @@
 const Card = require("../models/card");
 
+const {
+  STATUS_OK,
+  STATUS_CREATED,
+  STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
+  STATUS_SERVER_ERROR,
+} = require("../utils/errors");
+
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      res.send({ data: cards });
+      if (!cards || cards.length === 0) {
+        res.status(STATUS_NOT_FOUND).send({ message: "Карточки не найдены" });
+        return;
+      }
+      res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -17,29 +30,36 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => {
-      res.send({ data: card });
+      res.status(STATUS_CREATED).send({ data: card });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      if (err.name === "ValidationError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      }
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
 
-  if (!cardId) {
-    res.send({ message: "Такой карточки нет" });
-    return;
-  }
-
   Card.findByIdAndRemove(cardId)
     .then((deletedCard) => {
-      res.send({ message: `Карточка ${deletedCard} успешно удалена` });
+      if (!deletedCard) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Запрашиваемая карточка не найдена" });
+        return;
+      }
+      res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -50,11 +70,18 @@ const cardLike = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      res.send({ likes: card.likes });
+      if (!card) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Запрашиваемая карточка не найдена" });
+        return;
+      }
+      res.status(STATUS_OK).send({ likes: card.likes });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -65,11 +92,18 @@ const cardDislike = (req, res) => {
     { new: true }
   )
     .then((card) => {
-      res.send({ likes: card.likes });
+      if (!card) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Запрашиваемая карточка не найдена" });
+        return;
+      }
+      res.status(STATUS_OK).send({ likes: card.likes });
     })
     .catch((err) => {
-      console.error(err);
-      res.status(500).send({ message: "Произошла ошибка" });
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
