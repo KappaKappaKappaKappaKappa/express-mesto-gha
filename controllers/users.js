@@ -32,7 +32,7 @@ const getUser = (req, res) => {
     .then((user) => {
       if (!user) {
         res
-          .status(404)
+          .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемый пользователь не найден" });
         return;
       } else {
@@ -40,9 +40,14 @@ const getUser = (req, res) => {
       }
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "CastError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 

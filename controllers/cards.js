@@ -60,9 +60,14 @@ const deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "CastError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 
@@ -83,9 +88,14 @@ const cardLike = (req, res) => {
       }
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "CastError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 
@@ -106,9 +116,14 @@ const cardDislike = (req, res) => {
       }
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "CastError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 
