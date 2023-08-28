@@ -16,8 +16,9 @@ const getUsers = (req, res) => {
           .status(STATUS_NOT_FOUND)
           .send({ message: "Пользователи не найдены" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ data: users });
       }
-      res.status(STATUS_OK).send({ data: users });
     })
     .catch((err) => {
       res
@@ -34,8 +35,9 @@ const getUser = (req, res) => {
           .status(404)
           .send({ message: "Запрашиваемый пользователь не найден" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ data: user });
       }
-      res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
       res
@@ -54,10 +56,11 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
       }
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -69,16 +72,17 @@ const updateProfile = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((user) => {
-      if (!name || !about) {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
-      }
       res.status(STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "ValidationError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 
@@ -91,16 +95,17 @@ const updateAvatar = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((newAvatar) => {
-      if (!avatar) {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
-      }
       res.status(STATUS_OK).send({ data: newAvatar });
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err.name === "ValidationError") {
+        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
+        return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 

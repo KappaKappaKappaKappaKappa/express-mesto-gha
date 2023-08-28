@@ -14,8 +14,9 @@ const getCards = (req, res) => {
       if (!cards || cards.length === 0) {
         res.status(STATUS_NOT_FOUND).send({ message: "Карточки не найдены" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ data: cards });
       }
-      res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {
       res
@@ -36,10 +37,11 @@ const createCard = (req, res) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
       }
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -53,8 +55,9 @@ const deleteCard = (req, res) => {
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
       }
-      res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
     })
     .catch((err) => {
       res
@@ -75,8 +78,9 @@ const cardLike = (req, res) => {
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ likes: card.likes });
       }
-      res.status(STATUS_OK).send({ likes: card.likes });
     })
     .catch((err) => {
       res
@@ -97,8 +101,9 @@ const cardDislike = (req, res) => {
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
         return;
+      } else {
+        res.status(STATUS_OK).send({ likes: card.likes });
       }
-      res.status(STATUS_OK).send({ likes: card.likes });
     })
     .catch((err) => {
       res
