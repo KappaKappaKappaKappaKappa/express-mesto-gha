@@ -20,14 +20,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/users", require("./routes/users"));
+app.use("/cards", require("./routes/cards"));
+
 app.use((req, res) => {
   res
     .status(STATUS_NOT_FOUND)
     .send({ message: "Запрашиваемый ресурс не найден" });
 });
-
-app.use("/users", require("./routes/users"));
-app.use("/cards", require("./routes/cards"));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
