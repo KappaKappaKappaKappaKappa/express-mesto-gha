@@ -11,9 +11,7 @@ const {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      if (!users || users.length === 0) {
-        res.status(STATUS_OK).send({ data: users });
-      }
+      res.status(STATUS_OK).send({ data: users });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error) {

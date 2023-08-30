@@ -12,9 +12,7 @@ const {
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      if (!cards || cards.length === 0) {
         res.status(STATUS_OK).send({ data: cards });
-      }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error) {
