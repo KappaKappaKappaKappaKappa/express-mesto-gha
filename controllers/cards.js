@@ -6,21 +6,27 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
-  STATUS_NO_CONTENT
+  STATUS_NO_CONTENT,
 } = require("../utils/errors");
 
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      if(!cards || cards.length === 0){
+      if (!cards || cards.length === 0) {
         res.status(STATUS_NO_CONTENT).send();
       }
       res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
+      if (err instanceof mongoose.Error) {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Ошибка в базе данных" });
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
+      }
     });
 };
 
@@ -36,6 +42,10 @@ const createCard = (req, res) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else if (err instanceof mongoose.Error) {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Ошибка в базе данных" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -62,6 +72,10 @@ const deleteCard = (req, res) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else if (err instanceof mongoose.Error) {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Ошибка в базе данных" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -90,6 +104,10 @@ const cardLike = (req, res) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else if (err instanceof mongoose.Error) {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Ошибка в базе данных" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -118,6 +136,10 @@ const cardDislike = (req, res) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
         return;
+      } else if (err instanceof mongoose.Error) {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Ошибка в базе данных" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
