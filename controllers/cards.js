@@ -6,11 +6,15 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
+  STATUS_NO_CONTENT
 } = require("../utils/errors");
 
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
+      if(!cards || cards.length === 0){
+        res.status(STATUS_NO_CONTENT).send();
+      }
       res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {

@@ -6,6 +6,7 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
+  STATUS_NO_CONTENT
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
@@ -13,8 +14,8 @@ const getUsers = (req, res) => {
     .then((users) => {
       if (!users || users.length === 0) {
         res
-          .status(STATUS_NOT_FOUND)
-          .send({ message: "Пользователи не найдены" });
+          .status(STATUS_NO_CONTENT)
+          .send();
         return;
       } else {
         res.status(STATUS_OK).send({ data: users });
@@ -32,7 +33,7 @@ const getUser = (req, res) => {
     .then((user) => {
       if (!user) {
         res
-          .status(STATUS_NOT_FOUND)
+          .status(STATUS_NO_CONTENT)
           .send({ message: "Запрашиваемый пользователь не найден" });
         return;
       } else {
