@@ -13,8 +13,6 @@ const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
       if (!cards || cards.length === 0) {
-        res.status(STATUS_OK).send({ message: "Карточек нет" });
-      } else {
         res.status(STATUS_OK).send({ data: cards });
       }
     })

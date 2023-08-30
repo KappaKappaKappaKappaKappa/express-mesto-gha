@@ -12,10 +12,6 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       if (!users || users.length === 0) {
-        res
-          .status(STATUS_OK)
-          .send({ message: "Пользователи не найдены" });
-      } else {
         res.status(STATUS_OK).send({ data: users });
       }
     })
