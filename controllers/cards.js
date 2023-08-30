@@ -1,4 +1,5 @@
 const Card = require("../models/card");
+const mongoose = require("mongoose");
 
 const {
   STATUS_OK,
@@ -6,16 +7,16 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
-  STATUS_NO_CONTENT,
 } = require("../utils/errors");
 
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
       if (!cards || cards.length === 0) {
-        res.status(STATUS_NO_CONTENT).send({cards});
+        res.status(STATUS_OK).send({ message: "Карточек нет" });
+      } else {
+        res.status(STATUS_OK).send({ data: cards });
       }
-      res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error) {
@@ -41,7 +42,6 @@ const createCard = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -63,7 +63,6 @@ const deleteCard = (req, res) => {
         res
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
-        return;
       } else {
         res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
       }
@@ -71,7 +70,6 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -95,7 +93,6 @@ const cardLike = (req, res) => {
         res
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
-        return;
       } else {
         res.status(STATUS_OK).send({ likes: card.likes });
       }
@@ -103,7 +100,6 @@ const cardLike = (req, res) => {
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -127,7 +123,6 @@ const cardDislike = (req, res) => {
         res
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемая карточка не найдена" });
-        return;
       } else {
         res.status(STATUS_OK).send({ likes: card.likes });
       }
@@ -135,7 +130,6 @@ const cardDislike = (req, res) => {
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)

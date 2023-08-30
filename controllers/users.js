@@ -6,15 +6,15 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
-  STATUS_NO_CONTENT,
 } = require("../utils/errors");
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       if (!users || users.length === 0) {
-        res.status(STATUS_NO_CONTENT).send({users});
-        return;
+        res
+          .status(STATUS_OK)
+          .send({ message: "Пользователи не найдены" });
       } else {
         res.status(STATUS_OK).send({ data: users });
       }
@@ -24,10 +24,11 @@ const getUsers = (req, res) => {
         res
           .status(STATUS_SERVER_ERROR)
           .send({ message: "Ошибка в базе данных" });
+      } else {
+        res
+          .status(STATUS_SERVER_ERROR)
+          .send({ message: "Внутренняя ошибка сервера" });
       }
-      res
-        .status(STATUS_SERVER_ERROR)
-        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -38,7 +39,6 @@ const getUser = (req, res) => {
         res
           .status(STATUS_NOT_FOUND)
           .send({ message: "Запрашиваемый пользователь не найден" });
-        return;
       } else {
         res.status(STATUS_OK).send({ data: user });
       }
@@ -46,7 +46,6 @@ const getUser = (req, res) => {
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -68,7 +67,6 @@ const createUser = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -94,7 +92,6 @@ const updateProfile = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
@@ -121,7 +118,6 @@ const updateAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-        return;
       } else if (err instanceof mongoose.Error) {
         res
           .status(STATUS_SERVER_ERROR)
