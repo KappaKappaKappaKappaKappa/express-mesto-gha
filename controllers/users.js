@@ -13,7 +13,7 @@ const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       if (!users || users.length === 0) {
-        res.status(STATUS_NO_CONTENT).send();
+        res.status(STATUS_NO_CONTENT).send({users});
         return;
       } else {
         res.status(STATUS_OK).send({ data: users });
