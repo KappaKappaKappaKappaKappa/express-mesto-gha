@@ -12,18 +12,12 @@ const {
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-        res.status(STATUS_OK).send({ data: cards });
+      res.status(STATUS_OK).send({ data: cards });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
-      } else {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Внутренняя ошибка сервера" });
-      }
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -37,11 +31,7 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -58,18 +48,14 @@ const deleteCard = (req, res) => {
       if (!deletedCard) {
         res
           .status(STATUS_NOT_FOUND)
-          .send({ message: "Запрашиваемая карточка не найдена" });
+          .send({ message: "Карточка с указанным id не найдена." });
       } else {
         res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
       }
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -88,18 +74,14 @@ const cardLike = (req, res) => {
       if (!card) {
         res
           .status(STATUS_NOT_FOUND)
-          .send({ message: "Запрашиваемая карточка не найдена" });
+          .send({ message: "Передан несуществующий id карточки." });
       } else {
         res.status(STATUS_OK).send({ likes: card.likes });
       }
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные для постановки/снятии лайка." });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -118,18 +100,14 @@ const cardDislike = (req, res) => {
       if (!card) {
         res
           .status(STATUS_NOT_FOUND)
-          .send({ message: "Запрашиваемая карточка не найдена" });
+          .send({ message: "Передан несуществующий id карточки." });
       } else {
         res.status(STATUS_OK).send({ likes: card.likes });
       }
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные для постановки/снятии лайка." });
       } else {
         res
           .status(STATUS_SERVER_ERROR)

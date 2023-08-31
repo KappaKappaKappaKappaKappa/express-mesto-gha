@@ -14,15 +14,9 @@ const getUsers = (req, res) => {
       res.status(STATUS_OK).send({ data: users });
     })
     .catch((err) => {
-      if (err instanceof mongoose.Error) {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
-      } else {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Внутренняя ошибка сервера" });
-      }
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
     });
 };
 
@@ -39,11 +33,9 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
         res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -60,11 +52,9 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
         res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -81,15 +71,19 @@ const updateProfile = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((user) => {
-      res.status(STATUS_OK).send({ data: user });
+      if (!user) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Пользователь с указанным id не найден" });
+      } else {
+        res.status(STATUS_OK).send({ data: user });
+      }
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
         res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -107,15 +101,19 @@ const updateAvatar = (req, res) => {
     { new: true, runValidators: true }
   )
     .then((newAvatar) => {
-      res.status(STATUS_OK).send({ data: newAvatar });
+      if (!newAvatar) {
+        res
+          .status(STATUS_NOT_FOUND)
+          .send({ message: "Пользователь с указанным id не найден" });
+      } else {
+        res.status(STATUS_OK).send({ data: newAvatar });
+      }
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Некорректные данные" });
-      } else if (err instanceof mongoose.Error) {
         res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Ошибка в базе данных" });
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
