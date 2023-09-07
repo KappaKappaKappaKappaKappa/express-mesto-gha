@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const {
@@ -56,7 +56,8 @@ const createUser = (req, res) => {
     return;
   }
 
-  bcrypt.hash(password, 10).then((hash) => {
+  bcrypt.hash(password, 10)
+  .then((hash) => {
     User.create({ name, about, avatar, email, password: hash })
       .then((user) => {
         res.status(STATUS_CREATED).send({ data: user });
@@ -138,7 +139,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       throw new Error("Неправильные почта или пароль");
@@ -172,5 +173,5 @@ module.exports = {
   updateProfile,
   updateAvatar,
   login,
-  getCurrentUser
+  getCurrentUser,
 };
