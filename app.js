@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -7,13 +8,7 @@ const { PORT = 3000 } = process.env;
 mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use(express.json());
-
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: "64ea7977954b395f456e2bc9", // вставьте сюда _id созданного в предыдущем пункте пользователя
-//   };
-//   next();
-// });
+app.use(cookieParser());
 
 app.use("/", require("./routes/index"));
 

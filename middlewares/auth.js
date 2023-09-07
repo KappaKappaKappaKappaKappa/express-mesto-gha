@@ -2,15 +2,13 @@ const jwt = require("jsonwebtoken");
 const { STATUS_AUTH_ERROR } = require("../utils/errors");
 
 const authMiddleware = (req, res, next) => {
-  const { authorization } = req.headers;
+  const token = req.cookies.jwt;
 
-  if (!authorization || !authorization.startsWith("Bearer ")) {
+  if (!token) {
     return res
       .status(STATUS_AUTH_ERROR)
       .send({ message: "Необходима авторизация" });
   }
-
-  const token = authorization.replace("Bearer ", "");
 
   let payload;
 
@@ -24,7 +22,7 @@ const authMiddleware = (req, res, next) => {
 
   req.user = payload;
 
-  next()
+  next();
 };
 
 module.exports = authMiddleware;

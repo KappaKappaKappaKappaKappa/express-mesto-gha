@@ -7,6 +7,7 @@ const {
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_SERVER_ERROR,
+  STATUS_NO_PERMISSON,
 } = require("../utils/errors");
 
 const getCards = (req, res) => {
@@ -31,7 +32,9 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные" });
+        res
+          .status(STATUS_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -40,28 +43,38 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = async (req, res) => {
   const { cardId } = req.params;
+  const currentUser = req.user._id;
 
-  Card.findByIdAndRemove(cardId)
-    .then((deletedCard) => {
-      if (!deletedCard) {
-        res
-          .status(STATUS_NOT_FOUND)
-          .send({ message: "Карточка с указанным id не найдена." });
-      } else {
-        res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
-      }
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные" });
-      } else {
-        res
-          .status(STATUS_SERVER_ERROR)
-          .send({ message: "Внутренняя ошибка сервера" });
-      }
-    });
+  try {
+    const card = await Card.findById(cardId);
+
+    if (!card) {
+      return res
+        .status(STATUS_NOT_FOUND)
+        .send({ message: "Карточка с указанным id не найдена." });
+    }
+
+    if (card.owner.toString() !== currentUser.toString()) {
+      return res
+        .status(STATUS_NO_PERMISSON)
+        .send({ message: "Вы не можете удалять чужие карточки" });
+    }
+
+    const deletedCard = await Card.findByIdAndRemove(cardId);
+    res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
+  } catch (err) {
+    if (err.name === "CastError") {
+      res
+        .status(STATUS_BAD_REQUEST)
+        .send({ message: "Переданы некорректные данные" });
+    } else {
+      res
+        .status(STATUS_SERVER_ERROR)
+        .send({ message: "Внутренняя ошибка сервера" });
+    }
+  }
 };
 
 const cardLike = (req, res) => {
@@ -81,7 +94,9 @@ const cardLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные для постановки/снятии лайка." });
+        res.status(STATUS_BAD_REQUEST).send({
+          message: "Переданы некорректные данные для постановки/снятии лайка.",
+        });
       } else {
         res
           .status(STATUS_SERVER_ERROR)
@@ -107,7 +122,9 @@ const cardDislike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(STATUS_BAD_REQUEST).send({ message: "Переданы некорректные данные для постановки/снятии лайка." });
+        res.status(STATUS_BAD_REQUEST).send({
+          message: "Переданы некорректные данные для постановки/снятии лайка.",
+        });
       } else {
         res
           .status(STATUS_SERVER_ERROR)

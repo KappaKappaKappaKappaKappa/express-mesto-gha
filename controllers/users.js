@@ -160,6 +160,11 @@ const login = async (req, res) => {
   }
 };
 
+const getCurrentUser = (req, res) => {
+  const currentUser = req.user;
+  res.status(STATUS_OK).send({ data: currentUser });
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -167,4 +172,5 @@ module.exports = {
   updateProfile,
   updateAvatar,
   login,
+  getCurrentUser
 };
