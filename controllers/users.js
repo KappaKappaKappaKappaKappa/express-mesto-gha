@@ -106,7 +106,6 @@ const updateProfile = async (req, res) => {
   }
 };
 
-
 const updateAvatar = async (req, res) => {
   const { avatar } = req.body;
 
