@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 });
 
 router.use(
-  "/sign-in",
+  "/signin",
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().email().required(),
@@ -20,7 +20,7 @@ router.use(
   login
 );
 router.use(
-  "/sign-up",
+  "/signup",
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required(),
