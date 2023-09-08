@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     trim: true,
-    select: false,
   },
 });
 

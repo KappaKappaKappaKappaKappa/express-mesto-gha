@@ -47,7 +47,15 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res.status(STATUS_CREATED).send({ data: user });
+    res
+      .status(STATUS_CREATED)
+      .send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
   } catch (err) {
     if (err.name === "ValidationError") {
       return next(

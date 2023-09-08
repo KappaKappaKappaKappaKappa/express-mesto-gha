@@ -4,6 +4,7 @@ const auth = require("../middlewares/auth");
 const { celebrate, Joi } = require("celebrate");
 
 const { createUser, login } = require("../controllers/users");
+const NotFoundError = require("../errors/NotFoundError");
 
 router.get("/", (req, res) => {
   res.send("Сервер работает и ждет запросы, все круто!");
@@ -39,9 +40,7 @@ router.use("/users", auth, require("./users"));
 router.use("/cards", auth, require("./cards"));
 
 router.use((req, res) => {
-  res
-    .status(STATUS_NOT_FOUND)
-    .send({ message: "Запрашиваемый ресурс не найден" });
+  throw new NotFoundError("Запрашиваемый ресурс не найден");
 });
 
 module.exports = router;
