@@ -47,15 +47,13 @@ const createUser = async (req, res, next) => {
       email,
       password: hash,
     });
-    res
-      .status(STATUS_CREATED)
-      .send({
-        _id: user._id,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-      });
+    res.status(STATUS_CREATED).send({
+      _id: user._id,
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    });
   } catch (err) {
     if (err.name === "ValidationError") {
       return next(
@@ -148,11 +146,7 @@ const login = async (req, res, next) => {
 
     res.cookie("jwt", token, { httpOnly: true });
     res.status(STATUS_OK).send({
-      _id: user._id,
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      email: user.email,
+      data: user,
     });
   } catch (err) {
     next(err);
