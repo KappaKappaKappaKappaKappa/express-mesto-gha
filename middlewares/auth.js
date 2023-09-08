@@ -1,13 +1,11 @@
 const jwt = require("jsonwebtoken");
-const { STATUS_AUTH_ERROR } = require("../utils/errors");
+const AuthError = require("../errors/AuthError");
 
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return res
-      .status(STATUS_AUTH_ERROR)
-      .send({ message: "Необходима авторизация" });
+    throw new AuthError("Необходима авторизация");
   }
 
   let payload;
@@ -15,9 +13,7 @@ const authMiddleware = (req, res, next) => {
   try {
     payload = jwt.verify(token, "secret-key");
   } catch (err) {
-    return res
-      .status(STATUS_AUTH_ERROR)
-      .send({ message: "Необходима авторизация" });
+    next(new ErrAuthErroror("Необходима авторизация"));
   }
 
   req.user = payload;
