@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -11,6 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/", require("./routes/index"));
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
