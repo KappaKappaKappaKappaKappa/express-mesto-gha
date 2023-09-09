@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const { urlRegex } = require("../utils/validation");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,7 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default:
       "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
-    validate: /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i,
+    validate: urlRegex,
   },
   email: {
     type: String,
@@ -34,9 +35,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     trim: true,
-    select: false
+    select: false,
   },
 });
 

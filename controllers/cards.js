@@ -11,7 +11,7 @@ const getCards = async (req, res, next) => {
     const cards = await Card.find({});
     res.status(STATUS_OK).send({ data: cards });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -24,13 +24,13 @@ const createCard = async (req, res, next) => {
     res.status(STATUS_CREATED).send({ data: card });
   } catch (err) {
     if (err.name === "ValidationError") {
-      next(
+      return next(
         new BadRequestError(
           "Переданы некорректные данные в метод создания карточки"
         )
       );
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -53,9 +53,9 @@ const deleteCard = async (req, res, next) => {
     res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
   } catch (err) {
     if (err.name === "CastError") {
-      next(new BadRequestError("Переданы некорректные данные"));
+      return next(new BadRequestError("Переданы некорректные данные"));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -74,13 +74,13 @@ const cardLike = async (req, res, next) => {
     res.status(STATUS_OK).send({ likes: card.likes });
   } catch (err) {
     if (err.name === "CastError") {
-      next(
+      return next(
         new BadRequestError(
           "Переданы некорректные данные для постановки/снятии лайка."
         )
       );
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -99,13 +99,13 @@ const cardDislike = async (req, res, next) => {
     res.status(STATUS_OK).send({ likes: card.likes });
   } catch (err) {
     if (err.name === "CastError") {
-      next(
+      return next(
         new BadRequestError(
           "Переданы некорректные данные для постановки/снятии лайка."
         )
       );
     }
-    next(err);
+    return next(err);
   }
 };
 

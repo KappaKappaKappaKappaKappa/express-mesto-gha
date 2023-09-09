@@ -13,7 +13,7 @@ const getUsers = async (req, res, next) => {
     const users = await User.find({});
     res.status(STATUS_OK).send({ data: users });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -26,9 +26,9 @@ const getUser = async (req, res, next) => {
     res.status(STATUS_OK).send({ data: user });
   } catch (err) {
     if (err.name === "CastError") {
-      throw new BadRequestError("Некорректный id пользователя");
+      return next(new BadRequestError("Некорректный id пользователя"));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -69,7 +69,7 @@ const createUser = async (req, res, next) => {
       );
     }
 
-    next(err);
+    return next(err);
   }
 };
 
@@ -90,13 +90,13 @@ const updateProfile = async (req, res, next) => {
     res.status(STATUS_OK).send({ data: user });
   } catch (err) {
     if (err.name === "ValidationError") {
-      next(
+      return next(
         new BadRequestError(
           "Переданы некорректные данные в метод обновления профиля пользователя"
         )
       );
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -115,13 +115,13 @@ const updateAvatar = async (req, res) => {
     res.status(STATUS_OK).send({ data: user });
   } catch (err) {
     if (err.name === "ValidationError") {
-      next(
+      return next(
         new BadRequestError(
           "Переданы некорректные данные в метод обновления аватара пользователя"
         )
       );
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -146,10 +146,10 @@ const login = async (req, res, next) => {
 
     res.cookie("jwt", token, { httpOnly: true });
     res.status(STATUS_OK).send({
-      data: user,
+      data: "Успешная авторизация!",
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -163,9 +163,9 @@ const getCurrentUser = async (req, res) => {
     return res.status(STATUS_OK).send({ data: currentUser });
   } catch (err) {
     if (err.name === "CastError") {
-      next(new BadRequestError("Некорректный id пользователя"));
+      return next(new BadRequestError("Некорректный id пользователя"));
     }
-    next(err);
+    return next(err);
   }
 };
 
