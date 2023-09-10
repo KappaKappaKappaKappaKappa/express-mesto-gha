@@ -27,7 +27,7 @@ router.post(
         .regex(/https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i),
     }),
   }),
-  createCard
+  createCard,
 );
 router.delete("/:cardId", celebrate(paramsValidationConfig), deleteCard);
 router.put("/:cardId/likes", celebrate(paramsValidationConfig), cardLike);

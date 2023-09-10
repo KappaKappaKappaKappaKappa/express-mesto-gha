@@ -13,12 +13,12 @@ const authMiddleware = (req, res, next) => {
   try {
     payload = jwt.verify(token, "secret-key");
   } catch (err) {
-    next(new ErrAuthErroror("Необходима авторизация"));
+    return next(new AuthError("Необходима авторизация"));
   }
 
   req.user = payload;
 
-  next();
+  return next();
 };
 
 module.exports = authMiddleware;

@@ -1,7 +1,6 @@
 const router = require("express").Router();
-const { STATUS_NOT_FOUND } = require("../utils/errors");
-const auth = require("../middlewares/auth");
 const { celebrate, Joi } = require("celebrate");
+const auth = require("../middlewares/auth");
 
 const { createUser, login } = require("../controllers/users");
 const NotFoundError = require("../errors/NotFoundError");
@@ -18,7 +17,7 @@ router.use(
       password: Joi.string().required(),
     }),
   }),
-  login
+  login,
 );
 router.use(
   "/signup",
@@ -29,17 +28,17 @@ router.use(
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().regex(
-        /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i
+        /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i,
       ),
     }),
   }),
-  createUser
+  createUser,
 );
 
 router.use("/users", auth, require("./users"));
 router.use("/cards", auth, require("./cards"));
 
-router.use((req, res) => {
+router.use(() => {
   throw new NotFoundError("Запрашиваемый ресурс не найден");
 });
 

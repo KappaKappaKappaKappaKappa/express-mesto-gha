@@ -1,6 +1,6 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const NotFoundError = require("../errors/NotFoundError");
 const BadRequestError = require("../errors/BadRequestError");
 const AuthError = require("../errors/AuthError");
@@ -11,7 +11,7 @@ const { STATUS_OK, STATUS_CREATED } = require("../utils/errors");
 const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
-    res.status(STATUS_OK).send({ data: users });
+    return res.status(STATUS_OK).send({ data: users });
   } catch (err) {
     return next(err);
   }
@@ -23,7 +23,7 @@ const getUser = async (req, res, next) => {
     if (!user) {
       throw new NotFoundError("Запрашиваемый пользователь не найден");
     }
-    res.status(STATUS_OK).send({ data: user });
+    return res.status(STATUS_OK).send({ data: user });
   } catch (err) {
     if (err.name === "CastError") {
       return next(new BadRequestError("Некорректный id пользователя"));
@@ -100,7 +100,7 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   const { avatar } = req.body;
 
   try {
@@ -153,7 +153,7 @@ const login = async (req, res, next) => {
   }
 };
 
-const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res, next) => {
   try {
     const currentUser = await User.findById(req.user._id);
     if (!currentUser) {

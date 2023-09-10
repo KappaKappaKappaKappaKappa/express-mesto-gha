@@ -19,7 +19,7 @@ router.get(
       userId: Joi.string().custom(validateObjectId),
     }),
   }),
-  getUser
+  getUser,
 );
 router.patch(
   "/me",
@@ -29,18 +29,18 @@ router.patch(
       about: Joi.string().min(2).max(30),
     }),
   }),
-  updateProfile
+  updateProfile,
 );
 router.patch(
   "/me/avatar",
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string().regex(
-        /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i
+        /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i,
       ),
     }),
   }),
-  updateAvatar
+  updateAvatar,
 );
 
 module.exports = router;

@@ -1,5 +1,4 @@
 const Card = require("../models/card");
-const mongoose = require("mongoose");
 const NotFoundError = require("../errors/NotFoundError");
 const ForbiddenError = require("../errors/ForbiddenError");
 const BadRequestError = require("../errors/BadRequestError");
@@ -49,7 +48,7 @@ const deleteCard = async (req, res, next) => {
       throw new ForbiddenError("Вы не можете удалять чужие карточки");
     }
 
-    const deletedCard = await Card.findByIdAndRemove(cardId);
+    await Card.findByIdAndRemove(cardId);
     res.status(STATUS_OK).send({ message: `Карточка успешно удалена` });
   } catch (err) {
     if (err.name === "CastError") {
