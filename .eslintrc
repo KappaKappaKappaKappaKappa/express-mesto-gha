@@ -5,6 +5,6 @@
     "quotes": ["error", "double", { "allowTemplateLiterals": true }],
     "consistent-return": "off",
     "object-curly-newline": "off",
-    "comma-dangle": "off",
+    "comma-dangle": "off"
   }
 }
