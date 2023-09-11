@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { celebrate, Joi } = require("celebrate");
 const auth = require("../middlewares/auth");
+const { urlRegex } = require("../utils/validation");
 
 const { createUser, login } = require("../controllers/users");
 const NotFoundError = require("../errors/NotFoundError");
@@ -28,7 +29,7 @@ router.use(
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string().regex(
-        /https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i,
+        urlRegex
       ),
     }),
   }),
